@@ -84,6 +84,7 @@ h2 {
   display: flex;
   flex-direction: column;
   padding: 20px 50px;
+  line-height: 1.5em;
 }
 .dialog.choose-player-dialog h1 {
   margin-bottom: 50px;

@@ -3,10 +3,16 @@ import './App.css';
 import Broccoli from './assets/broccoli.png';
 import Face from './assets/face.png';
 import Demon2 from './assets/demon.png';
-// import Sam2 from './assets/sam-with-mouth.png';
 import Sam from './assets/sam.png';
+import Siena from './assets/siena.png';
 import Cake from './assets/cake.jpeg';
 import Pacman from './assets/pacman.png';
+import Rosa from './assets/rosa.png';
+import Ruby from './assets/ruby.png';
+import Max from './assets/max.png';
+import Miles from './assets/miles.png';
+import Andrew from './assets/andrew.png';
+import Dylan from './assets/dylan.png';
 import useInterval from './hooks/useInterval';
 
 interface Player {
@@ -20,7 +26,7 @@ const winningScoreParam = parseInt(params.winningScore);
 const winningScoreParamAsNum = isNaN(winningScoreParam) ? undefined : winningScoreParam;
 const altClue = !!params.alt;
 
-const clue = altClue ? 'Clue variant 2' : 'Clue variant 1';
+const clue = altClue ? 'Check Sam\'s email.' : 'In past years it was jello but that was too mellow. We\'ve had to step it up, let\'s hope no one throws up.';
 
 const canvasX = 1000;
 const canvasY = 1000;
@@ -52,12 +58,17 @@ function rotateAndPaintImage (
 
 const players = [
   { id: 'mouth', picture: Face },
-  // { id: 'demon', picture: Demon}, 
   { id: 'demon2', picture: Demon2}, 
   { id: 'sam', picture: Sam },
-  // { id: 'sam2', picture: Sam2 },
-  { id: 'pacman', picture: Pacman }
-]
+  { id: 'pacman', picture: Pacman },
+  { id: 'siena', picture: Siena },
+  { id: 'rosa', picture: Rosa },
+  { id: 'ruby', picture: Ruby },
+  { id: 'max', picture: Max },
+  { id: 'miles', picture: Miles },
+  { id: 'andrew', picture: Andrew },
+  { id: 'dylan', picture: Dylan },
+].sort((a, b) => 0.5 - Math.random());
 
 const App = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
