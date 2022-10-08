@@ -5,6 +5,14 @@ object-assign
 */
 
 /**
+ *
+ *
+ * @author Jerry Bendy <jerry@icewingcc.com>
+ * @licence MIT
+ *
+ */
+
+/**
  * @license React
  * react-dom.production.min.js
  *
