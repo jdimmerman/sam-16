@@ -1,9 +1,26 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import './App.css';
 import Broccoli from './assets/broccoli.png';
-import Face from './assets/face.jpeg';
+import Face from './assets/face.png';
+import Demon2 from './assets/demon.png';
+// import Sam2 from './assets/sam-with-mouth.png';
+import Sam from './assets/sam.png';
 import Cake from './assets/cake.jpeg';
+import Pacman from './assets/pacman.png';
 import useInterval from './hooks/useInterval';
+
+interface Player {
+  id: string;
+  picture: string;
+}
+
+const urlSearchParams = new URLSearchParams(window.location.search);
+const params = Object.fromEntries(urlSearchParams.entries());
+const winningScoreParam = parseInt(params.winningScore);
+const winningScoreParamAsNum = isNaN(winningScoreParam) ? undefined : winningScoreParam;
+const altClue = !!params.alt;
+
+const clue = altClue ? 'Clue variant 2' : 'Clue variant 1';
 
 const canvasX = 1000;
 const canvasY = 1000;
@@ -14,7 +31,7 @@ const initialSnake = [
 const initialApple = [14, 10];
 const scale = 50;
 const timeDelay = 100;
-const winningScore = 50;
+const winningScore = winningScoreParamAsNum ?? 50;
 const toRadians = Math.PI/180; 
 
 function rotateAndPaintImage (
@@ -28,10 +45,19 @@ function rotateAndPaintImage (
 ) {
   context.translate( positionX, positionY );
   context.rotate( angleDegrees * toRadians );
-  context.drawImage( image, -axisX, -axisY, 1, 1 );
+  context.drawImage( image, -axisX, -axisY - 1, 3, 3 );
   context.rotate( -angleDegrees * toRadians );
   context.translate( -positionX, -positionY );
 }
+
+const players = [
+  { id: 'mouth', picture: Face },
+  // { id: 'demon', picture: Demon}, 
+  { id: 'demon2', picture: Demon2}, 
+  { id: 'sam', picture: Sam },
+  // { id: 'sam2', picture: Sam2 },
+  { id: 'pacman', picture: Pacman }
+]
 
 const App = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -42,6 +68,15 @@ const App = () => {
   const [gameOver, setGameOver] = useState(false);
   const [wonGame, setWonGame] = useState(false);
   const [score, setScore] = useState(0);
+  const [choosePlayerDialogIsOpen, setChoosePlayerDialogIsOpen] = useState(true);
+  const [player, setPlayer] = useState<Player>();
+  const playAreaRef = useRef<HTMLDivElement>(null);
+
+  const handleChoosePlayer = useCallback((player: Player) => () => {
+    setChoosePlayerDialogIsOpen(false);
+    setPlayer(player);
+    play();
+  }, [])
 
   useInterval(() => runGame(), delay);
 
@@ -108,6 +143,7 @@ const App = () => {
     setScore(0);
     setGameOver(false);
     setWonGame(false);
+    requestAnimationFrame(() => playAreaRef.current?.focus());
   }
   function checkCollision(head: number[]) {
     for (let i = 0; i < snake.length; i++) {
@@ -139,6 +175,7 @@ const App = () => {
     if (checkCollision(newSnakeHead)) {
       setDelay(null);
       setGameOver(true);
+      setChoosePlayerDialogIsOpen(true);
       handleSetScore();
     }
     if (!appleAte(newSnake)) {
@@ -163,14 +200,35 @@ const App = () => {
     }
   }
 
+  if (choosePlayerDialogIsOpen) {
+    return (
+      <div className="dialog choose-player-dialog">
+        {gameOver ? <h1>Game Over :(. Try again...</h1> :  <h1>Choose Your Player</h1>}
+        <div>
+          {players.map(x => <img key={x.id} src={x.picture} alt="" onClick={handleChoosePlayer(x)} />)}
+        </div>
+      </div>
+    )
+  }
+
+  if (wonGame) {
+    return (
+      <div className="dialog won-game-dialog">
+        <h1>You won!</h1>
+        <p>{clue}</p>
+      </div>
+    )
+  }
+
   return (
-    <div onKeyDown={e => changeDirection(e)}>
+    <div ref={playAreaRef} tabIndex={0} onKeyDown={changeDirection}>
       <div className="scoreBox">
         <h2>Score: {score}</h2>
         <h2>High Score: {localStorage.getItem('snakeScore')}</h2>
+        <h2>Win at: {winningScore}</h2>
       </div>
       <img id="fruit" src={Broccoli} alt="fruit" width="30" />
-      <img id="face" src={Face} alt="face" width="30" />
+      <img id="face" src={player?.picture} alt="face" width="30" />
       <img src={Cake} alt="fruit" className="monitor" />
       <canvas
         className="playArea"
@@ -180,9 +238,9 @@ const App = () => {
       />
       {gameOver && <div className="gameOver">{`:()`}</div>}
       {wonGame && <div className="wonGame">{`:)`}</div>}
-      <button onClick={play} className="playButton">
+      {/* <button onClick={play} className="playButton">
         Play
-      </button>
+      </button> */}
     </div>
   );
 };

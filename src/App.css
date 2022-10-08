@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 body {
-  background: white;
+  background: black;
   font-family: 'Press Start 2P', cursive;
 }
 .playArea {
@@ -72,4 +72,34 @@ body {
 h2 {
   font-size: 18px;
   padding: 10px;
+}
+.dialog {
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  top: 20%;
+  bottom: 20%;
+  background: coral;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 50px;
+}
+.dialog.choose-player-dialog h1 {
+  margin-bottom: 50px;
+}
+.dialog.choose-player-dialog > div {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 50px;
+  row-gap: 50px;
+  justify-content: center;
+  min-height: 0;
+}
+.dialog.choose-player-dialog img {
+  width: 100px;
+  height: 100px;
+  cursor: pointer;
+  box-shadow: 0 0 10px black;
+  background-color: white;
 }
